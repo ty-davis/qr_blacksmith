@@ -16,7 +16,7 @@ func New(path string) (*Resolver, error) {
 	}
 	r, err := maxminddb.Open(path)
 	if err != nil {
-		return &Resolver{}, nil
+		return &Resolver{}, err
 	}
 	return &Resolver{db: r}, nil
 }
