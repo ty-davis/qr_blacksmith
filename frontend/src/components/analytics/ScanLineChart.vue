@@ -48,7 +48,7 @@ const options = {
 </script>
 
 <template>
-  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 w-full">
     <h3 v-if="title" class="text-sm font-medium text-gray-500 mb-4">{{ title }}</h3>
     <div class="h-48">
       <Line v-if="data.length" :data="chartData" :options="options" />

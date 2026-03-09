@@ -5,9 +5,9 @@ defineProps<{
 </script>
 
 <template>
-  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 overflow-x-auto">
     <h3 class="text-sm font-medium text-gray-500 mb-4">Top Countries</h3>
-    <div v-if="data.length" class="space-y-3">
+    <div v-if="data.length" class="space-y-3 min-w-[200px]">
       <div
         v-for="(item, idx) in data.slice(0, 10)"
         :key="item.country_code"

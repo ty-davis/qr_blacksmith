@@ -92,28 +92,28 @@ async function handleDelete() {
     </div>
     <template v-else-if="batchStore.currentBatch">
       <!-- Header -->
-      <div class="flex items-start justify-between">
-        <div>
+      <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+        <div class="min-w-0">
           <button @click="router.back()" class="text-sm text-gray-400 hover:text-gray-600 mb-2">← Back</button>
-          <h1 class="text-xl font-semibold text-gray-900">{{ batchStore.currentBatch.name }}</h1>
+          <h1 class="text-xl font-semibold text-gray-900 truncate">{{ batchStore.currentBatch.name }}</h1>
           <p v-if="batchStore.currentBatch.description" class="text-sm text-gray-500 mt-1">{{ batchStore.currentBatch.description }}</p>
         </div>
-        <div class="flex gap-2">
+        <div class="flex flex-wrap gap-2 flex-shrink-0">
           <button
             @click="editing = !editing"
-            class="px-3 py-1.5 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+            class="px-3 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
           >
             {{ editing ? 'Cancel' : 'Edit' }}
           </button>
           <button
             @click="showGenerateModal = true"
-            class="px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            class="px-3 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             + Generate QR Codes
           </button>
           <button
             @click="showDeleteConfirm = true"
-            class="px-3 py-1.5 text-sm border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition-colors"
+            class="px-3 py-2 text-sm border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition-colors"
           >
             Delete
           </button>
@@ -146,7 +146,7 @@ async function handleDelete() {
       <!-- Bulk redirect -->
       <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-3">
         <h3 class="font-medium text-gray-900">Bulk Redirect Update</h3>
-        <div class="flex gap-3">
+        <div class="flex flex-col sm:flex-row gap-3">
           <input
             v-model="bulkUrl"
             type="url"

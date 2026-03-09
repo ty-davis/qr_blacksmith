@@ -16,8 +16,8 @@ function submit() {
 </script>
 
 <template>
-  <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-    <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
+  <div class="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
+    <div class="bg-white rounded-t-2xl sm:rounded-xl shadow-xl w-full sm:max-w-md p-6 max-h-[90vh] overflow-y-auto">
       <h2 class="text-lg font-semibold text-gray-900 mb-4">Generate QR Codes</h2>
       <div class="space-y-4">
         <div>
@@ -44,13 +44,13 @@ function submit() {
       <div class="flex gap-3 mt-6">
         <button
           @click="submit"
-          class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+          class="flex-1 bg-blue-600 text-white py-3 px-4 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
         >
           Generate
         </button>
         <button
           @click="emit('cancel')"
-          class="flex-1 bg-gray-100 text-gray-700 py-2 px-4 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors"
+          class="flex-1 bg-gray-100 text-gray-700 py-3 px-4 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors"
         >
           Cancel
         </button>

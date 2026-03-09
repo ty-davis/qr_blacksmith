@@ -76,12 +76,12 @@ function downloadQR() {
     </div>
     <template v-else>
       <!-- Header -->
-      <div class="flex items-start justify-between">
-        <div>
+      <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+        <div class="min-w-0">
           <button @click="router.back()" class="text-sm text-gray-400 hover:text-gray-600 mb-2">← Back</button>
-          <h1 class="text-xl font-semibold text-gray-900">{{ qrStore.currentQRCode.label ?? qrStore.currentQRCode.hash }}</h1>
+          <h1 class="text-xl font-semibold text-gray-900 truncate">{{ qrStore.currentQRCode.label ?? qrStore.currentQRCode.hash }}</h1>
         </div>
-        <button @click="showDeleteConfirm = true" class="px-3 py-1.5 text-sm border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition-colors">
+        <button @click="showDeleteConfirm = true" class="self-start px-3 py-2 text-sm border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition-colors flex-shrink-0">
           Delete
         </button>
       </div>

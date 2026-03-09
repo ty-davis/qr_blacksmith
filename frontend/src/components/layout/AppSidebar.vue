@@ -2,6 +2,9 @@
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
+defineProps<{ open: boolean }>()
+const emit = defineEmits<{ close: [] }>()
+
 const router = useRouter()
 const route = useRoute()
 const auth = useAuthStore()
@@ -13,13 +16,42 @@ async function handleLogout() {
 </script>
 
 <template>
-  <aside class="w-64 bg-white border-r border-gray-200 flex flex-col">
-    <div class="p-6 border-b border-gray-200">
+  <!-- Backdrop overlay (mobile only) -->
+  <Transition
+    enter-active-class="transition-opacity duration-300"
+    leave-active-class="transition-opacity duration-300"
+    enter-from-class="opacity-0"
+    leave-to-class="opacity-0"
+  >
+    <div
+      v-if="open"
+      class="fixed inset-0 bg-black/50 z-40 lg:hidden"
+      @click="emit('close')"
+    />
+  </Transition>
+
+  <!-- Sidebar drawer -->
+  <aside
+    class="w-64 bg-white border-r border-gray-200 flex flex-col fixed inset-y-0 left-0 z-50 transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 lg:z-auto"
+    :class="open ? 'translate-x-0' : '-translate-x-full'"
+  >
+    <div class="p-6 border-b border-gray-200 flex items-center justify-between">
       <h1 class="text-xl font-bold text-gray-900">QR Blacksmith</h1>
+      <!-- Close button visible on mobile only -->
+      <button
+        @click="emit('close')"
+        class="lg:hidden p-1.5 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+        aria-label="Close menu"
+      >
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
     </div>
     <nav class="flex-1 p-4 space-y-1">
       <RouterLink
         to="/"
+        @click="emit('close')"
         class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
         :class="route.name === 'dashboard' ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100'"
       >
@@ -30,6 +62,7 @@ async function handleLogout() {
       </RouterLink>
       <RouterLink
         to="/batches"
+        @click="emit('close')"
         class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
         :class="route.path.startsWith('/batches') ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100'"
       >
@@ -40,6 +73,7 @@ async function handleLogout() {
       </RouterLink>
       <RouterLink
         to="/account"
+        @click="emit('close')"
         class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
         :class="route.name === 'account' ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:bg-gray-100'"
       >
@@ -52,7 +86,7 @@ async function handleLogout() {
     </nav>
     <div class="p-4 border-t border-gray-200">
       <div class="flex items-center gap-3 mb-3">
-        <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 text-sm font-bold">
+        <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 text-sm font-bold flex-shrink-0">
           {{ auth.user?.email.charAt(0).toUpperCase() }}
         </div>
         <span class="text-sm text-gray-700 truncate">{{ auth.user?.email }}</span>

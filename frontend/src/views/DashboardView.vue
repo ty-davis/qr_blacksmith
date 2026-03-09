@@ -55,34 +55,34 @@ function formatDate(d: string) {
         <div class="flex items-center gap-4">
           <img
             :src="`${apiBase}/api/qrcodes/${stats.most_scanned_code.id}/image?size=64`"
-            class="w-16 h-16 rounded-lg border border-gray-200"
+            class="w-16 h-16 rounded-lg border border-gray-200 flex-shrink-0"
             alt="QR code"
           />
-          <div>
-            <p class="font-medium text-gray-900">{{ stats.most_scanned_code.label ?? stats.most_scanned_code.hash }}</p>
+          <div class="min-w-0">
+            <p class="font-medium text-gray-900 truncate">{{ stats.most_scanned_code.label ?? stats.most_scanned_code.hash }}</p>
             <p class="text-sm text-gray-500">{{ stats.most_scanned_code.scan_count.toLocaleString() }} scans</p>
-            <p class="text-xs text-gray-400 truncate max-w-sm">{{ stats.most_scanned_code.effective_url }}</p>
+            <p class="text-xs text-gray-400 truncate">{{ stats.most_scanned_code.effective_url }}</p>
           </div>
         </div>
       </div>
 
       <!-- Recent scans -->
       <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-100">
+        <div class="px-4 sm:px-6 py-4 border-b border-gray-100">
           <h3 class="text-sm font-medium text-gray-700">Recent Scans</h3>
         </div>
         <div v-if="stats.recent_scans.length" class="divide-y divide-gray-100">
           <div
             v-for="scan in stats.recent_scans.slice(0, 10)"
             :key="scan.scanned_at + scan.qr_code_id"
-            class="px-6 py-3 flex items-center justify-between text-sm"
+            class="px-4 sm:px-6 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between text-sm gap-1 sm:gap-0"
           >
-            <div>
+            <div class="min-w-0">
               <span class="font-medium text-gray-800">{{ scan.qr_code_label ?? scan.qr_code_id }}</span>
               <span class="text-gray-400 mx-2">·</span>
               <span class="text-gray-500">{{ scan.batch_name }}</span>
             </div>
-            <div class="flex items-center gap-3 text-gray-400 text-xs">
+            <div class="flex items-center gap-3 text-gray-400 text-xs flex-shrink-0">
               <span>{{ scan.device_type }}</span>
               <span v-if="scan.country">{{ scan.country }}</span>
               <span>{{ formatDate(scan.scanned_at) }}</span>

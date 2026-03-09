@@ -32,8 +32,10 @@ defineExpose({ refresh })
       title="No QR codes yet"
       message="Generate QR codes to get started"
     />
-    <div v-else class="space-y-3">
-      <QRCodeCard v-for="qr in store.qrcodes" :key="qr.id" :qrcode="qr" />
+    <div v-else class="space-y-4">
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+        <QRCodeCard v-for="qr in store.qrcodes" :key="qr.id" :qrcode="qr" />
+      </div>
       <Pagination
         v-if="store.total > perPage"
         :total="store.total"

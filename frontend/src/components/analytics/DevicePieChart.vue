@@ -33,7 +33,7 @@ const options = {
 </script>
 
 <template>
-  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+  <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 w-full">
     <h3 class="text-sm font-medium text-gray-500 mb-4">Devices</h3>
     <div class="h-48">
       <Doughnut v-if="data.length" :data="chartData" :options="options" />
