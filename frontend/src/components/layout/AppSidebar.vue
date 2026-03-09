@@ -36,7 +36,10 @@ async function handleLogout() {
     :class="open ? 'translate-x-0' : '-translate-x-full'"
   >
     <div class="p-6 border-b border-gray-200 flex items-center justify-between">
-      <h1 class="text-xl font-bold text-gray-900">QR Blacksmith</h1>
+      <h1 class="text-xl font-bold text-gray-900 flex gap-2">
+        <img src="/logo.svg" height="30" width="30"/>
+        QR Blacksmith
+      </h1>
       <!-- Close button visible on mobile only -->
       <button
         @click="emit('close')"
