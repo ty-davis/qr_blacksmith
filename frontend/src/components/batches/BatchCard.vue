@@ -22,8 +22,8 @@ function formatDate(date: string) {
     <p class="text-xs text-gray-400 truncate mb-4">→ {{ batch.redirect_url }}</p>
     <div class="flex items-center gap-4 text-sm">
       <div class="flex items-center gap-1 text-gray-600">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8H2a11 11 0 0014 10.9M15 8h-2a11 11 0 00-8.9 5.1M9 8a11 11 0 0114 0" />
+        <svg class="w-4 h-4" fill="none" viewBox="-3 -3 30 30" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M 0 0 H 8 V 8 H 0 V 0 M 16 0 H 24 V 8 H 16 V 0 M 0 16 H 8 V 24 H 0 V 16 M 16 16 H 20 V 20 H 16 V 16" />
         </svg>
         <span>{{ batch.qr_code_count }} codes</span>
       </div>

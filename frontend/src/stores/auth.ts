@@ -47,7 +47,10 @@ export const useAuthStore = defineStore('auth', () => {
   function clearAuth() {
     accessToken.value = null
     user.value = null
-    persist()
+    sessionStorage.removeItem(TOKEN_KEY)
+    sessionStorage.removeItem(USER_KEY)
+    localStorage.removeItem(TOKEN_KEY)
+    localStorage.removeItem(USER_KEY)
   }
 
   return { user, accessToken, isLoggedIn, login, register, refresh, logout, clearAuth, persist }

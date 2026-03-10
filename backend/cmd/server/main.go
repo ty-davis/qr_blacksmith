@@ -105,6 +105,7 @@ func main() {
 		r.Delete("/api/batches/{id}", batchHandler.DeleteBatch)
 		r.Put("/api/batches/{id}/redirect", batchHandler.UpdateBatchRedirect)
 		r.Get("/api/batches/{id}/analytics", batchHandler.GetBatchAnalytics)
+		r.Get("/api/batches/{id}/export/csv", qrCodeHandler.ExportBatchCSV)
 		r.Get("/api/batches/{id}/qrcodes", qrCodeHandler.ListQRCodes)
 		r.Post("/api/batches/{id}/qrcodes", qrCodeHandler.GenerateQRCodes)
 

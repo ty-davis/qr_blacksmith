@@ -32,8 +32,8 @@ func (h *AuthHandler) setRefreshCookie(w http.ResponseWriter, token string, expi
 		Path:     "/api/auth",
 		Expires:  expires,
 		HttpOnly: true,
-		Secure:   false,
-		SameSite: http.SameSiteLaxMode,
+		Secure:   true,
+		SameSite: http.SameSiteNoneMode,
 	})
 }
 
@@ -44,8 +44,8 @@ func (h *AuthHandler) clearRefreshCookie(w http.ResponseWriter) {
 		Path:     "/api/auth",
 		Expires:  time.Unix(0, 0),
 		HttpOnly: true,
-		Secure:   false,
-		SameSite: http.SameSiteLaxMode,
+		Secure:   true,
+		SameSite: http.SameSiteNoneMode,
 		MaxAge:   -1,
 	})
 }

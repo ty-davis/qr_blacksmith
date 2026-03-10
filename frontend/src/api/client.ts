@@ -22,7 +22,8 @@ client.interceptors.response.use(
   res => res,
   async err => {
     const original = err.config
-    if (err.response?.status === 401 && !original._retry) {
+    const isRefreshEndpoint = original.url?.includes('/api/auth/refresh')
+    if (err.response?.status === 401 && !original._retry && !isRefreshEndpoint) {
       original._retry = true
       if (isRefreshing) {
         return new Promise(resolve => {
@@ -41,6 +42,7 @@ client.interceptors.response.use(
         original.headers.Authorization = `Bearer ${auth.accessToken}`
         return client(original)
       } catch {
+        refreshQueue = []
         useAuthStore().clearAuth()
         window.location.href = '/login'
         return Promise.reject(err)

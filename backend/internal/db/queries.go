@@ -833,3 +833,63 @@ func GetOverviewStats(db *sql.DB, userID string) (*models.OverviewStats, error) 
 
 	return stats, rows.Err()
 }
+
+// GetAllQRCodesForBatch returns every QR code in a batch without pagination,
+// used for CSV export. Returns nil if the batch doesn't belong to userID.
+func GetAllQRCodesForBatch(db *sql.DB, batchID, userID string) ([]models.QRCode, error) {
+	var exists int
+	if err := db.QueryRow(`SELECT COUNT(*) FROM batches WHERE id = ? AND user_id = ?`, batchID, userID).Scan(&exists); err != nil {
+		return nil, err
+	}
+	if exists == 0 {
+		return nil, nil
+	}
+
+	rows, err := db.Query(`
+		SELECT qc.id, qc.hash, qc.batch_id, qc.redirect_url, qc.label,
+			COALESCE(qc.redirect_url, b.redirect_url) as effective_url,
+			COUNT(s.id) as scan_count,
+			MAX(s.scanned_at) as last_scanned_at,
+			qc.created_at
+		FROM qr_codes qc
+		JOIN batches b ON qc.batch_id = b.id
+		LEFT JOIN scans s ON s.qr_code_id = qc.id
+		WHERE qc.batch_id = ?
+		GROUP BY qc.id
+		ORDER BY qc.created_at ASC
+	`, batchID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var codes []models.QRCode
+	for rows.Next() {
+		var qc models.QRCode
+		var redirectURL, label sql.NullString
+		var lastScannedAt sql.NullString
+		var createdAt string
+		if err := rows.Scan(
+			&qc.ID, &qc.Hash, &qc.BatchID, &redirectURL, &label,
+			&qc.EffectiveURL,
+			&qc.ScanCount, &lastScannedAt,
+			&createdAt,
+		); err != nil {
+			return nil, err
+		}
+		if redirectURL.Valid {
+			qc.RedirectURL = &redirectURL.String
+		}
+		if label.Valid {
+			qc.Label = &label.String
+		}
+		if lastScannedAt.Valid && lastScannedAt.String != "" {
+			t := parseTime(lastScannedAt.String)
+			qc.LastScannedAt = &t
+		}
+		qc.CreatedAt = parseTime(createdAt)
+		codes = append(codes, qc)
+	}
+
+	return codes, rows.Err()
+}

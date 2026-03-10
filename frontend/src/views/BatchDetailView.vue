@@ -29,6 +29,7 @@ const bulkUrl = ref('')
 const overrideIndividuals = ref(false)
 const gridRef = ref<InstanceType<typeof QRCodeGrid> | null>(null)
 const saving = ref(false)
+const exporting = ref(false)
 const error = ref('')
 
 onMounted(async () => {
@@ -83,6 +84,18 @@ async function handleDelete() {
   await batchStore.deleteBatch(batchId)
   router.push('/batches')
 }
+
+async function handleExportCSV() {
+  if (!batchStore.currentBatch) return
+  exporting.value = true
+  try {
+    await batchApi.exportBatchCSV(batchId, batchStore.currentBatch.name)
+  } catch (e: unknown) {
+    error.value = e instanceof Error ? e.message : 'Failed to export CSV'
+  } finally {
+    exporting.value = false
+  }
+}
 </script>
 
 <template>
@@ -104,6 +117,13 @@ async function handleDelete() {
             class="px-3 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
           >
             {{ editing ? 'Cancel' : 'Edit' }}
+          </button>
+          <button
+            @click="handleExportCSV"
+            :disabled="exporting"
+            class="px-3 py-2 text-sm border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors"
+          >
+            {{ exporting ? 'Exporting…' : 'Export CSV' }}
           </button>
           <button
             @click="showGenerateModal = true"

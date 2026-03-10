@@ -2,10 +2,13 @@ package handlers
 
 import (
 	"database/sql"
+	"encoding/csv"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
@@ -288,4 +291,71 @@ func (h *QRCodeHandler) GetQRCodeAnalytics(w http.ResponseWriter, r *http.Reques
 		return
 	}
 	writeJSON(w, http.StatusOK, analytics)
+}
+
+func (h *QRCodeHandler) ExportBatchCSV(w http.ResponseWriter, r *http.Request) {
+	userID := auth.UserIDFromCtx(r.Context())
+	batchID := chi.URLParam(r, "id")
+
+	batch, err := dbpkg.GetBatchByID(h.db, batchID, userID)
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, "internal error")
+		return
+	}
+	if batch == nil {
+		writeError(w, http.StatusNotFound, "batch not found")
+		return
+	}
+
+	userBaseURL, _ := dbpkg.GetUserBaseURL(h.db, userID)
+	scanBase := effectiveBaseURL(batch.BaseURL, userBaseURL, h.baseURL)
+
+	codes, err := dbpkg.GetAllQRCodesForBatch(h.db, batchID, userID)
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, "internal error")
+		return
+	}
+
+	// Sanitise batch name for use in the filename
+	safeName := strings.Map(func(r rune) rune {
+		if r == ' ' {
+			return '_'
+		}
+		if (r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z') || (r >= '0' && r <= '9') || r == '-' || r == '_' {
+			return r
+		}
+		return -1
+	}, batch.Name)
+
+	w.Header().Set("Content-Type", "text/csv; charset=utf-8")
+	w.Header().Set("Content-Disposition", fmt.Sprintf(`attachment; filename="%s.csv"`, safeName))
+
+	cw := csv.NewWriter(w)
+	_ = cw.Write([]string{"label", "scan_url", "effective_url", "redirect_url", "scan_count", "last_scanned_at", "created_at"})
+
+	for _, code := range codes {
+		label := ""
+		if code.Label != nil {
+			label = *code.Label
+		}
+		redirectURL := ""
+		if code.RedirectURL != nil {
+			redirectURL = *code.RedirectURL
+		}
+		lastScannedAt := ""
+		if code.LastScannedAt != nil {
+			lastScannedAt = code.LastScannedAt.Format(time.RFC3339)
+		}
+		_ = cw.Write([]string{
+			label,
+			fmt.Sprintf("%s/r/%s", scanBase, code.Hash),
+			code.EffectiveURL,
+			redirectURL,
+			strconv.Itoa(code.ScanCount),
+			lastScannedAt,
+			code.CreatedAt.Format(time.RFC3339),
+		})
+	}
+
+	cw.Flush()
 }

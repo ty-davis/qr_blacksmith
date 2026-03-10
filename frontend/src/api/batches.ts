@@ -21,3 +21,13 @@ export const updateBatchRedirect = (id: string, redirectUrl: string, overrideInd
 
 export const getBatchAnalytics = (id: string, from?: string, to?: string) =>
   client.get<ScanAnalytics>(`/api/batches/${id}/analytics`, { params: { from, to } }).then(r => r.data)
+
+export const exportBatchCSV = async (id: string, batchName: string): Promise<void> => {
+  const response = await client.get(`/api/batches/${id}/export/csv`, { responseType: 'blob' })
+  const url = URL.createObjectURL(response.data)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `${batchName}.csv`
+  a.click()
+  URL.revokeObjectURL(url)
+}
